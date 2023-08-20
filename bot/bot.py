@@ -37,7 +37,6 @@ if __name__ == "__main__":
     asyncio.run(create_bot())
     log.critical("Currency Bot - DOWN")
 
-# TODO - add logging
 # TODO - add celery
 # TODO - writer docker
 # TODO - write Makefile

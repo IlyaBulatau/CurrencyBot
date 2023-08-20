@@ -21,7 +21,7 @@ async def start_command(message: Message):
         "username": username if username else None
     }
     await add_user_in_db(data)
-    await message.answer(text=f"Hello {username if username else 'friend'}")
+    await message.answer(text=f"👋Hello {username if username else 'friend'}")
 
 @router.message(Command(commands=["currency"]))
 async def currency_command(message: Message):
