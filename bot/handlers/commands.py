@@ -3,7 +3,8 @@ from aiogram import Router
 from aiogram.types import Message
 from aiogram.enums.parse_mode import ParseMode
 
-from utils.query_to_db import get_banks_data_in_db, add_user_in_db
+from utils.query_to_db import get_banks_data_in_db, add_user_in_db, update_banks_in_db
+from settings.settings import BotSettings
 
 
 router = Router()
@@ -30,3 +31,18 @@ async def currency_command(message: Message):
     """
     text = await get_banks_data_in_db()
     await message.answer(text=text, parse_mode=ParseMode.HTML)
+
+@router.message(Command(commands=["updateBank"]))
+async def update_bank(message: Message):
+    """
+    The func update banks info in DB
+    Only admin can use the
+    """
+    admin_id = BotSettings().admin_id
+    if int(admin_id) != int(message.from_user.id):
+        return
+
+    await update_banks_in_db()
+    await message.answer(text="Successfully completed")    
+
+    

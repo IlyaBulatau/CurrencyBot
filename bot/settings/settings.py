@@ -10,11 +10,15 @@ class BotSettings:
         self._token: str = os.environ.get("BOT_TOKEN")
         self.email: str = os.environ.get("EMAIL")
         self.email_password: str = os.environ.get("EMAIL_PASSWORD") 
+        self._admin_id: int = os.environ.get("ADMIN_ID")
 
     @property
     def token(self):
         return self._token
     
+    @property
+    def admin_id(self):
+        return self._admin_id
 
 class DatabaseSettings:
 
