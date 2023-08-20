@@ -8,6 +8,8 @@ class BotSettings:
 
     def __init__(self):
         self._token: str = os.environ.get("BOT_TOKEN")
+        self.email: str = os.environ.get("EMAIL")
+        self.email_password: str = os.environ.get("EMAIL_PASSWORD") 
 
     @property
     def token(self):
@@ -17,10 +19,10 @@ class BotSettings:
 class DatabaseSettings:
 
     def __init__(self):
-        self._login = os.environ.get("DB_LOGIN")
-        self._password = os.environ.get("DB_PASSWORD")
-        self._name = os.environ.get("DB_NAME")
-        self._host = os.environ.get("DB_HOST")
+        self._login: str = os.environ.get("DB_LOGIN")
+        self._password: str = os.environ.get("DB_PASSWORD")
+        self._name: str = os.environ.get("DB_NAME")
+        self._host: str = os.environ.get("DB_HOST")
 
     @property
     def login(self):

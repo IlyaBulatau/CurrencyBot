@@ -1,6 +1,8 @@
 import asyncpg
 
 from settings.settings import DatabaseSettings 
+from utils.my_logger import log
+
 
 class Database:
     settings = DatabaseSettings()
@@ -15,12 +17,13 @@ class Database:
                                 host=self.settings.host,
                                 )
         
-        if await self._check_if_database_is_exist(connect):
+        if not await self._check_if_database_is_exist(connect):
             query = f"CREATE DATABASE {self.settings.name}"
             try:
                 await connect.execute(query=query)
-            except:
-                ...
+                log.critical("Create DATABASE")
+            except Exception as e:
+                log.critical(f"Error - DATABASE doesn't create\n{e}")
             finally:
                 await connect.close()
 

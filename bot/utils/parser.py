@@ -6,6 +6,8 @@ from bs4 import BeautifulSoup as BS
 
 from string import digits
 
+from utils.my_logger import log
+
 
 URL ="https://myfin.by/currency/usd"
 
@@ -28,14 +30,17 @@ class Parser:
         soup = BS(html, "lxml")
 
         # processe parsing
-        div = soup.find("tbody", class_="sort_body")
-        div_with_table = div.find_all("tr", class_="currencies-courses__row-main")
-        for item in div_with_table:
-            name, surrender, buy = item.find_all("td")[:3]
+        try:
+            div = soup.find("tbody", class_="sort_body")
+            div_with_table = div.find_all("tr", class_="currencies-courses__row-main")
+            for item in div_with_table:
+                name, surrender, buy = item.find_all("td")[:3]
 
-            data = self.serializer_data(name=name.text, surrunder_currency=surrender.text, buy_currency=buy.text)
-            data_list.append(data)
-
+                data = self.serializer_data(name=name.text, surrunder_currency=surrender.text, buy_currency=buy.text)
+                data_list.append(data)
+        except Exception as e:
+            log.critical(f"Error during parsing\n{e}")
+            
         return data_list 
 
     def serializer_data(self, name: str, surrunder_currency: str, buy_currency: str) -> tuple[str, float, float]:

@@ -3,6 +3,7 @@ from sqlalchemy.ext.asyncio import async_sessionmaker, AsyncSession, create_asyn
 from contextlib import asynccontextmanager
 
 from settings.settings import DatabaseSettings
+from utils.my_logger import log
 
 
 engine = create_async_engine(url=DatabaseSettings().url, echo=True, future=True) 
@@ -15,7 +16,8 @@ async def create_session() -> AsyncSession:
     try:
         yield session
         await session.commit()
-    except:
+    except Exception as e:
         await session.rollback()
+        log.warning(f"Error - {e}")
     finally:
         await session.close()

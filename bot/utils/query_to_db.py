@@ -5,6 +5,7 @@ from utils.serializers import Serialiser
 
 from datetime import datetime
 
+from utils.my_logger import log
 from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -15,15 +16,14 @@ async def _write_currency_data_in_db():
     Used at the beggining of the bot start to populate the DB
     """
     parser = Parser()
-    for data in parser.parse_html():
-        name, surrender, buy = data
-
-        bank = Bank(name=name, 
-                    buy_currency=buy, 
-                    surrender_currency=surrender,
-                    update_time=datetime.now())
-        
-        async with create_session() as session:
+    async with create_session() as session:
+        for data in parser.parse_html():
+            name, surrender, buy = data
+            bank = Bank(name=name, 
+                        buy_currency=buy, 
+                        surrender_currency=surrender,
+                        update_time=datetime.now())
+            
             session: AsyncSession
             session.add(bank)
 
@@ -44,13 +44,17 @@ async def add_user_in_db(data: dict):
     """
     Add new user in DB
     """
-    user = User(tg_id=data.get("tg_id"),
-                username=data.get("username", None))
+    tg_id=data.get("tg_id")
+    username = data.get("username", None)
+
+    user = User(tg_id=tg_id,
+                username=username)
                 
     
     async with create_session() as session:
         session: AsyncSession
         session.add(user)
+    log.critical(f"Create new user with username - {username}")
 
 async def update_banks_in_db():
     """
@@ -71,5 +75,6 @@ async def update_banks_in_db():
             }
             query = update(Bank).where(Bank.name == name).values(**params).execution_options(synchronize_session='fetch')
             await session.execute(query)
+    log.critical("Processe update banks info complite")
         
 

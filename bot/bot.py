@@ -8,6 +8,7 @@ from settings.settings import BotSettings
 from utils.menu import setup_menu
 from database.db import Database
 from utils.query_to_db import _write_currency_data_in_db
+from utils.my_logger import log
 
 
 async def create_bot():
@@ -27,12 +28,14 @@ async def create_bot():
     )
 
     await Database().create_database() # create database if not exists
-    # await _write_currency_data_in_db() # write data or rollback
+    await _write_currency_data_in_db() # write data or rollback
 
     await ds.start_polling(bot) # run bot
 
 if __name__ == "__main__":
+    log.critical("Currency Bot - UP")
     asyncio.run(create_bot())
+    log.critical("Currency Bot - DOWN")
 
 # TODO - add logging
 # TODO - add celery
