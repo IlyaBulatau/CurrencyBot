@@ -36,3 +36,5 @@ if __name__ == "__main__":
 
 # TODO - add logging
 # TODO - add celery
+# TODO - writer docker
+# TODO - write Makefile

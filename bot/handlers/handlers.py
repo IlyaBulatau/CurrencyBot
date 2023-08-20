@@ -6,4 +6,7 @@ router = Router()
 
 @router.message()
 async def echo(message: Message):
-    await message.answer(text="OK")
+    """
+    Delete all message
+    """
+    await message.delete()

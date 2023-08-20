@@ -5,11 +5,15 @@ from utils.serializers import Serialiser
 
 from datetime import datetime
 
-from sqlalchemy import select
+from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 
 async def _write_currency_data_in_db():
+    """
+    Write parse-data in DB
+    Used at the beggining of the bot start to populate the DB
+    """
     parser = Parser()
     for data in parser.parse_html():
         name, surrender, buy = data
@@ -23,8 +27,10 @@ async def _write_currency_data_in_db():
             session: AsyncSession
             session.add(bank)
 
-async def get_banks_data_in_db():
-    
+async def get_banks_data_in_db() -> str:
+    """
+    Return all info about banks from DB to str format
+    """
     query = select(Bank)
     async with create_session() as session:
         session: AsyncSession
@@ -33,4 +39,37 @@ async def get_banks_data_in_db():
 
     serializer = Serialiser(data)
     return serializer.to_text()
+
+async def add_user_in_db(data: dict):
+    """
+    Add new user in DB
+    """
+    user = User(tg_id=data.get("tg_id"),
+                username=data.get("username", None))
+                
+    
+    async with create_session() as session:
+        session: AsyncSession
+        session.add(user)
+
+async def update_banks_in_db():
+    """
+    Update data the banks in DB
+    Used oce on a day to update data
+    """
+    parser = Parser()
+
+    async with create_session() as session:
+        session: AsyncSession
+
+        for data in parser.parse_html():
+            name, surrender, buy = data
+            params = {
+                "name": name,
+                "buy_currency": buy,
+                "surrender_currency": surrender,
+            }
+            query = update(Bank).where(Bank.name == name).values(**params).execution_options(synchronize_session='fetch')
+            await session.execute(query)
+        
 
