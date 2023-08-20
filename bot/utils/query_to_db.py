@@ -48,13 +48,24 @@ async def add_user_in_db(data: dict):
     username = data.get("username", None)
 
     user = User(tg_id=tg_id,
-                username=username)
-                
+                username=username)            
     
     async with create_session() as session:
+        if await user_is_exists_in_db(session, tg_id):
+            return
+        
         session: AsyncSession
         session.add(user)
     log.critical(f"Create new user with username - {username}")
+
+async def user_is_exists_in_db(session: AsyncSession, tg_id: str) -> bool:
+    user_in_db = await session.execute(select(User).where(User.tg_id == tg_id))
+    is_exists = user_in_db.scalars().first()
+    if is_exists:
+        return True
+    return False
+
+
 
 async def update_banks_in_db():
     """
