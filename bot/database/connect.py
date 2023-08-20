@@ -1,26 +1,21 @@
-from sqlalchemy.engine import create_engine as ce
-from sqlalchemy.ext.asyncio import async_sessionmaker, AsyncSession
+from sqlalchemy.ext.asyncio import async_sessionmaker, AsyncSession, create_async_engine
 
 from contextlib import asynccontextmanager
 
-from bot.settings.settings import DatabaseSettings
+from settings.settings import DatabaseSettings
 
 
-engine = ce(url=DatabaseSettings().url, echo=True, future=True, _is_async=True) 
+engine = create_async_engine(url=DatabaseSettings().url, echo=True, future=True) 
 session_factory = async_sessionmaker(bind=engine, expire_on_commit=False, autoflush=False)
 
 
 @asynccontextmanager
-async def session() -> AsyncSession:
-    """
-    Back session
-    """
-    new_session: AsyncSession = session_factory()
+async def create_session() -> AsyncSession:
+    session = session_factory()
     try:
-        yield new_session
-        await new_session.commit()
+        yield session
+        await session.commit()
     except:
-        await new_session.rollback()
+        await session.rollback()
     finally:
-        await new_session.close()
-
+        await session.close()

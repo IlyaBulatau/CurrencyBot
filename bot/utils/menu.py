@@ -6,7 +6,12 @@ def setup_menu():
         BotCommand(
         command="start",
         description="Start over"
+        ),
+        BotCommand(
+        command="currency",
+        description="Currency exchange rate"
         )
     ])
 
     return commands
+
