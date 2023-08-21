@@ -1,0 +1,5 @@
+.env.example
+.gitignore
+__pycache__/
+vscode
+log.log

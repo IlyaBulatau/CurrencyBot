@@ -38,5 +38,4 @@ if __name__ == "__main__":
     log.critical("Currency Bot - DOWN")
 
 # TODO - add celery
-# TODO - writer docker
-# TODO - write Makefile
+# TODO - write Makefile for seet environment variabels

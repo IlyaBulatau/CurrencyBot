@@ -18,7 +18,7 @@ class Bank(Base):
     __tablename__ = "banks"
 
     id = db.Column(db.UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    name = db.Column(db.String(), unique=True, nullable=False)
+    name = db.Column(db.String(), nullable=False, default="-")
     buy_currency = db.Column(db.Float(), nullable=True)
     surrender_currency = db.Column(db.Float(), nullable=True)
     update_time = db.Column(db.DateTime(), onupdate=db.sql.func.now(), server_default=db.sql.func.now())
